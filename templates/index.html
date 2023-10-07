@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>獲取當前經緯度</title>
+</head>
+<body>
+    <h1>獲取當前經緯度</h1>
+    
+    <p id="coordinates">等待獲取位置...</p>
+    
+    <script>
+        // 檢查瀏覽器是否支援地理位置功能
+        if ("geolocation" in navigator) {
+            // 獲取地理位置
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+                var coordinatesElement = document.getElementById("coordinates");
+                coordinatesElement.textContent = "緯度：" + latitude + ", 經度：" + longitude;
+
+                // 發送經緯度資訊給後端
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/send-location", true);
+                xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhr.send(JSON.stringify({latitude: latitude, longitude: longitude}));
+            });
+        } else {
+            var coordinatesElement = document.getElementById("coordinates");
+            coordinatesElement.textContent = "瀏覽器不支援地理位置功能";
+        }
+    </script>
+</body>
+</html>
